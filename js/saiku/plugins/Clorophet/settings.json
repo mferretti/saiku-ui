@@ -1,0 +1,18 @@
+{
+"regions":[
+	{
+		"scale" : ["#C8EEFF", "#006491"],
+		"normalizeFunction" : "polynomial"
+	}
+],
+"markers":[
+	{
+		"attribute" : "fill",
+		"scale" : [ "#FEE5D9", "#a50f0f" ]
+	},
+	{
+		"attribute" : "r",
+		"scale" : [ 5, 20 ]
+	}
+]
+}

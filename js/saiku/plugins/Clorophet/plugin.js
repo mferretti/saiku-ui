@@ -17,6 +17,7 @@
 
 var LOOKUP_COUNTRY_MAP;
 var CENTROIDS;
+var GENERIC_MAP_LAYOUT=loadJsonData("js/saiku/plugins/Clorophet/settings.json");
 /**
  * Renders a stats for each workspace
  */
@@ -367,48 +368,26 @@ function iterator(data, key) {
 
 function paint_map(settings) {
 	var data = settings.getSeries();
-	var markers=[];
+	var markers=getMarkersLayout();
 	var centroids={};
-	var regions=[];
+	var regions=getRegionLayout();
 	
 	var markerSeries1 ={};
 	
 	if (data['markers']){
-		regions= [ {
-			values : data['series'][0],
-			scale : [ '#C8EEFF', '#006491' ],
-			normalizeFunction : 'polynomial'
-		} ];
-		
+		regions[0].values=data['series'][0];
 		centroids = getCentroids(data['markers'][0]),
 		markerSeries1 = data['markers'][0];
 		if (data['markers'][1]) {
 			var markerSeries2 = data['markers'][1];
-			markers= [ {
-				attribute : 'r',
-				scale : [ 5, 20 ],
-				values : markerSeries1,
-			}, {
-				attribute : 'fill',
-				scale : [ '#FEE5D9', '#A50F15' ],
-				values : markerSeries2,
-			} ];
-		} else if (data['markers'][0]) {
-			markers= [ {
-				attribute : 'r',
-				scale : [ 5, 20 ],
-				values : markerSeries1,
-			} ];
+			markers[1].values=markerSeries2;
 		}
-	} else { 
-		regions= [ {
-			values : data,
-			scale : [ '#C8EEFF', '#006491' ],
-			normalizeFunction : 'polynomial'
-		} ];
+		markers[0].values=markerSeries1;
+	} else{
+		regions[0].values=data;
 	}
 
-	$(settings.mapId).vectorMap(
+	var mapObject = $(settings.mapId).vectorMap(
 			{
 				backgroundColor : '#C4C4C4',
 				map : 'europe_mill_en',
@@ -489,4 +468,18 @@ function getCentroids(data) {
 		markers[region] = centroid;
 	}
 	return markers;
+}
+
+function getRegionLayout(){
+	if (!GENERIC_MAP_LAYOUT){
+		GENERIC_MAP_LAYOUT=loadJsonData("js/saiku/plugins/Clorophet/settings.json");
+	}
+	return GENERIC_MAP_LAYOUT.regions || {};
+}
+
+function getMarkersLayout(){
+	if (!GENERIC_MAP_LAYOUT){
+		GENERIC_MAP_LAYOUT=loadJsonData("js/saiku/plugins/Clorophet/settings.json");
+	}
+	return GENERIC_MAP_LAYOUT.markers || {};
 }
